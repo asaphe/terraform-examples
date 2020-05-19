@@ -1,0 +1,37 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowReadingFromElasticsearch",
+        "Effect": "Allow",
+        "Action": "es:ESHttpGet",
+        "Resource": "arn:aws:es:us-east-1:000000000000:domain/example/*"
+      },
+      {
+          "Sid": "AllowReadingMetricsFromCloudWatch",
+          "Effect": "Allow",
+          "Action": [
+              "cloudwatch:ListMetrics",
+              "cloudwatch:GetMetricStatistics",
+              "cloudwatch:GetMetricData"
+          ],
+          "Resource": "*"
+      },
+      {
+          "Sid": "AllowReadingTagsInstancesRegionsFromEC2",
+          "Effect": "Allow",
+          "Action": [
+              "ec2:DescribeTags",
+              "ec2:DescribeInstances",
+              "ec2:DescribeRegions"
+          ],
+          "Resource": "*"
+      },
+      {
+          "Sid": "AllowReadingResourcesForTags",
+          "Effect" : "Allow",
+          "Action" : "tag:GetResources",
+          "Resource" : "*"
+      }
+    ]
+}

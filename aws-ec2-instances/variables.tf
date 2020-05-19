@@ -64,6 +64,11 @@ variable "root_ebs_volume_size" {
   default     = 20
 }
 
+variable "root_volume_encrypted" {
+  description = "Encrypt EBS volume using the default customer key (CMK) that the AWS account uses"
+  type        = bool
+  default     = false
+}
 
 variable "ebs_volume_type" {
   description = "EBS Volume type ['gp2', 'io1', 'sc1' or 'st1']"
@@ -77,6 +82,17 @@ variable "ebs_volume_size" {
   default     = 40
 }
 
+variable "ebs_volume_encrypted" {
+  description = "Encrypt EBS volume using the default customer key (CMK) that the AWS account uses"
+  type        = bool
+  default     = false
+}
+
+variable "ebs_encryption_by_default" {
+  description = "Provides a resource to manage whether default EBS encryption is enabled for your AWS account in the current AWS region"
+  type        = string
+  default     = "false"
+}
 
 variable "availability_zones" {
   description = "Availability Zones"

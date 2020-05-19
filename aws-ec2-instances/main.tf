@@ -68,6 +68,7 @@ module "ec2" {
       device_name           = "/dev/sda"
       volume_size           = var.root_ebs_volume_size
       volume_type           = var.root_ebs_volume_type
+      encrypted             = var.root_volume_encrypted
       delete_on_termination = true
     }
   ]
@@ -97,6 +98,7 @@ resource "aws_ebs_volume" "this" {
   availability_zone = module.ec2.availability_zone[count.index]
   size              = var.ebs_volume_size
   type              = var.ebs_volume_type
+  encrypted         = var.ebs_volume_encrypted
 
   tags = merge(
     local.tags,
@@ -117,4 +119,9 @@ resource "local_file" "private_key" {
   content         = tls_private_key.this.private_key_pem
   filename        = local.private_key_path
   file_permission = "0600"
+}
+
+resource "aws_ebs_encryption_by_default" "this" {
+  count   = var.ebs_encryption_by_default == "true" ? 1 : 0
+  enabled = true
 }

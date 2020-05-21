@@ -82,12 +82,12 @@ variable "regional_cluster" {
 
 variable "kubernetes_version" {
   type    = string
-  default = "1.15.11-gke.3"
+  default = "1.16.8-gke.15"
 }
 
 variable "node_version" {
   type    = string
-  default = "1.15.11-gke.3"
+  default = "1.16.8-gke.15"
 }
 
 variable "vpc_name" {

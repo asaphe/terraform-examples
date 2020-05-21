@@ -4,6 +4,7 @@ CLUSTER_NAME="${1}"
 DB_IP="${2}"
 DB_USERNAME="${3:-postgres}"
 DB_PASSWORD="${4:-password}"
+vault_keys_location="${5:-/tmp}"
 
 if [[ -z "${1}" ]]; then echo "Cluster name must be specified"; exit 1; fi
 export SA_SECRET=$(kubectl -n vault get sa vault -o jsonpath='{.secrets[0].name}')
@@ -12,6 +13,9 @@ export K8S_CA_CERT=$(kubectl config view -o jsonpath="{.clusters[?(@.name=='${CL
 export K8S_ENDPOINT=$(kubectl config view -o jsonpath="{.clusters[?(@.name=='${CLUSTER_NAME}')].cluster.server}")
 
 kubectl exec -ti vault-0 -n vault -- sh -c 'VAULT_STATUS=$(vault status | grep  Initialized | grep -o "true"); if [[ "${VAULT_STATUS}" != "true" ]]; then vault operator init -format yaml > /tmp/tokens && cat /tmp/tokens | sed -n -e "s/^.*\(root_token: \)//p" > /tmp/admin_token; else echo "Initialized"; fi'
+kubectl exec -ti vault-0 -n vault -- sh -c 'cat /tmp/tokens | grep -A 5 recovery_keys_b64 | grep -v recovery_keys_b64:' > "${vault_keys_location}/vault_recovery_keysb64"
+kubectl exec -ti vault-0 -n vault -- sh -c 'cat /tmp/tokens | grep -A 5 recovery_keys_hex | grep -v recovery_keys_hex:' > "${vault_keys_location}/recovery_keys_hex"
+kubectl exec -ti vault-0 -n vault -- sh -c 'cat /tmp/admin_token' > "${vault_keys_location}/admin_token"
 kubectl apply --filename=./yamls/vault-auth-serviceaccount.yaml
 
 sleep 2

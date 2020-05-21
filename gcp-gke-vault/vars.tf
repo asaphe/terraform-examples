@@ -183,7 +183,7 @@ variable "horizontal_pod_autoscaling" {
 variable "maintenance_start_time" {
   type        = string
   description = "Time window specified for daily or recurring maintenance operations in RFC3339 format [05:00]"
-  default     = ""
+  default     = "00:00"
 }
 
 variable "vault_ui_port" {

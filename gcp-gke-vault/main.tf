@@ -51,6 +51,9 @@ module "gke" {
   network_policy             = var.network_policy
   http_load_balancing        = var.http_load_balancing
   horizontal_pod_autoscaling = var.horizontal_pod_autoscaling
+  maintenance_start_time   = var.maintenance_start_time
+  logging_service          = "logging.googleapis.com/kubernetes"
+  monitoring_service       = "monitoring.googleapis.com/kubernetes"
 
   node_pools_oauth_scopes = {
     all = [

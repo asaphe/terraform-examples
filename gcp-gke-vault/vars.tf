@@ -179,3 +179,9 @@ variable "horizontal_pod_autoscaling" {
   description = "Enable horizontal pod autoscaling"
   default     = false
 }
+
+variable "maintenance_start_time" {
+  type        = string
+  description = "Time window specified for daily or recurring maintenance operations in RFC3339 format [05:00]"
+  default     = ""
+}

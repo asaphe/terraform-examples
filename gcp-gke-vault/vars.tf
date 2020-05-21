@@ -185,3 +185,9 @@ variable "maintenance_start_time" {
   description = "Time window specified for daily or recurring maintenance operations in RFC3339 format [05:00]"
   default     = ""
 }
+
+variable "vault_ui_port" {
+  type        = number
+  description = "Vault UI port number"
+  default     = 8200
+}

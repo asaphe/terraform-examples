@@ -9,6 +9,7 @@ data "template_file" "vault-values" {
   bucket_name  = module.gcs_bucket.name,
   key_ring     = module.kms.keyring_name
   crypto_key   = var.kms_crypto_key
+  ui_port      = var.vault_ui_port
   }
 }
 

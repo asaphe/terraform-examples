@@ -131,5 +131,5 @@ ui:
   enabled: true
   serviceType: "ClusterIP"
   serviceNodePort: null
-  externalPort: 8200
+  externalPort: ${ui_port}
   annotations: {}

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-agent-config
+  namespace: demo
+data:
+  vault-agent-config.hcl: |
+    vault {
+      renew_token = true
+      vault_agent_token_file = "/home/vault/.vault-token"
+      tls_skip_verify = true
+      retry {
+        backoff = "1s"
+      }
+    }
+
+    auto_auth {
+        method "kubernetes" {
+            mount_path = "auth/kubernetes"
+            config = {
+                role = "demo-app"
+            }
+        }
+        sink "file" {
+            config = {
+                path = "/home/vault/.vault-token"
+            }
+        }
+    }
+
+    template {
+      destination = "/usr/share/nginx/html/index.html"
+      command     = "wget http://127.0.0.1:8080/refresh"
+      contents = <<EOH
+      <html>
+      <body>
+      <p>Secrets!</p>
+      {{- with secret "secret/helloworld" }}
+      <ul>
+      <li><pre>username: {{ .Data.username }}</pre></li>
+      <li><pre>password: {{ .Data.password }}</pre></li>
+      </ul>
+      {{ end }}
+      </body>
+      </html>
+      EOH
+    }

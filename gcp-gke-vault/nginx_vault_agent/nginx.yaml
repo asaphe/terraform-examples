@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-example
+  namespace: demo
+  labels:
+    app: nginx-example
+spec:
+  selector:
+    matchLabels:
+      app: nginx-example
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-example
+    spec:
+      serviceAccountName: demo-app
+      initContainers:
+        - name: vault-agent-init
+          image: vault
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "125m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          env:
+            - name: VAULT_ADDR
+              value: http://vault.vault:8200
+          volumeMounts:
+            - name: agent-init-config
+              mountPath: /etc/vault
+            - name: vault-token
+              mountPath: /home/vault
+          args:
+            [
+              "agent",
+              "-config=/etc/vault/vault-agent-config.hcl",
+              "-log-level=debug",
+            ]
+      containers:
+        - name: vault-agent
+          image: vault
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "125m"
+            limits:
+              memory: "64Mi"
+              cpu: "125m"
+          env:
+            - name: VAULT_ADDR
+              value: http://vault.vault:8200
+          volumeMounts:
+            - name: agent-config
+              mountPath: /etc/vault
+            - name: vault-token
+              mountPath: /home/vault
+            - name: shared-data
+              mountPath: /usr/share/nginx/html
+          args:
+            [
+              "agent",
+              "-config=/etc/vault/vault-agent-config.hcl",
+              "-log-level=debug",
+            ]
+        - name: nginx
+          image: nginx:1.17.9
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+            - name: shared-data
+              mountPath: /usr/share/nginx/html
+          ports:
+          - containerPort: 8080
+        volumes:
+          - name: nginx-config
+            configMap:
+              name: nginx-config
+          - name: vault-token
+            emptyDir:
+              medium: Memory
+          - name: agent-init-config
+            configMap:
+              name: vault-agent-init-config
+              items:
+                - key: vault-agent-config.hcl
+                  path: vault-agent-config.hcl
+          - name: agent-config
+            configMap:
+              name: vault-agent-config
+              items:
+                - key: vault-agent-config.hcl
+                  path: vault-agent-config.hcl
+          - name: shared-data
+            emptyDir: {}

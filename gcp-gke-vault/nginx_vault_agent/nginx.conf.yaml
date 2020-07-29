@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: demo
+data:
+  default.conf: |
+    server {
+      listen 8080;
+      access_log /dev/stdout;
+      location / {
+        root /usr/share/nginx/html/;
+        default_type "text/html";
+      }
+      location /refresh {
+        default_type text/plain;
+        return 200 $request_uri;
+      }
+    }

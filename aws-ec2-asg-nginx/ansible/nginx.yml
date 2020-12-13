@@ -1,0 +1,12 @@
+- name: Install Nginx
+  hosts: all
+  become: true
+  pre_tasks:
+    - name: Wait for SSH
+      wait_for:
+        host: "{{ ansible_default_ipv4.address }}"
+        port: 22
+        search_regex: "OpenSSH"
+        delay: 10
+  roles:
+    - role: nginxinc.nginx

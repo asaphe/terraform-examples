@@ -1,0 +1,83 @@
+listen: "0.0.0.0:8080"
+concurency: 20
+
+cache:
+    type: "mem"
+    size_mb: 2000
+    defaultTimeoutSec: 60
+
+cpus: 0
+tz: ""
+
+functionsConfig:
+    graphiteWeb: "/etc/carbonapi/graphiteweb.yaml"
+    timeShift: "/etc/carbonapi/timeshift.yaml"
+
+maxBatchSize: 0
+
+graphite:
+    host: ""
+    interval: "60s"
+    prefix: "carbon.api"
+    pattern: "{prefix}.{fqdn}"
+idleConnections: 10
+pidFile: ""
+
+upstreams:
+    buckets: 10
+    timeouts:
+        find: "2s"
+        render: "10s"
+        connect: "200ms"
+    concurrencyLimitPerServer: 0
+    keepAliveInterval: "30s"
+    maxIdleConnsPerHost: 100
+    backends:
+        - "http://localhost:8082"
+    graphite09compat: false
+    backendsv2:
+        backends:
+          -
+            groupName: "go-carbon"
+            protocol: "auto"
+            lbMethod: "broadcast"
+            maxTries: 3
+            maxBatchSize: 100
+            keepAliveInterval: "10s"
+            concurrencyLimit: 0
+            maxIdleConnsPerHost: 1000
+            forceAttemptHTTP2: false
+            doMultipleRequestsIfSplit: false
+            timeouts:
+                find: "2s"
+                render: "50s"
+                connect: "200ms"
+            servers:
+                - "http://localhost:8082"
+          -
+            groupName: "go-carbon"
+            protocol: "auto"
+            lbMethod: "broadcast"
+            servers:
+                - "http://localhost:8082"
+
+expireDelaySec: 0
+
+expvar:
+      enabled: true
+      pprofEnabled: false
+      listen: ""
+
+logger:
+    - logger: ""
+      file: "stderr"
+      level: "error"
+      encoding: "mixed"
+      encodingTime: "iso8601"
+      encodingDuration: "seconds"
+    - logger: ""
+      file: "/var/log/carbonapi/carbonapi.log"
+      level: "info"
+      encoding: "json"
+      encodingTime: "iso8601"
+      encodingDuration: "seconds"

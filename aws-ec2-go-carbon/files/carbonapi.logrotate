@@ -1,0 +1,10 @@
+/var/log/carbonapi/*.log {
+    compress
+    create carbon carbon
+    daily
+    delaycompress
+    maxsize 500M
+    missingok
+    notifempty
+    rotate 2
+}

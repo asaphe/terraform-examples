@@ -1,0 +1,12 @@
+enabled: false
+fallbackUrls:
+    - "http://localhost:8080"
+strict: false
+maxConcurrentConnections: 10
+timeout: "90s"
+keepAliveInterval: "30s"
+forceSkip:
+    - "aliasByTags"
+    - "seriesByTag"
+    - "groupByTags"
+    - "events"
